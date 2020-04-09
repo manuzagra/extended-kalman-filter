@@ -29,7 +29,7 @@ void KalmanFilter::Predict() {
    * predict the state
    */
 	x_ = F_ * x_;
-	F_ = (F_ * P_ * F_.transpose()) + Q_;
+	P_ = (F_ * P_ * F_.transpose()) + Q_;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
