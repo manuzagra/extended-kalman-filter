@@ -34,8 +34,8 @@ FusionEKF::FusionEKF() {
               0, 0, 0.09;
 
   // measurement matrix - laser
-  H_laser_ << 1, 0, 0, 0,
-              0, 1, 0, 0;
+  H_laser_ << 1., 0., 0., 0.,
+              0., 1., 0., 0.;
 
   // measurement matrix - radar
   // it is non linear, so the Jacobian will be used instead
@@ -67,18 +67,18 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     // Initialize state.
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-    	float x = measurement_pack.raw_measurements_[0] * cos(measurement_pack.raw_measurements_[1]);
-    	float y = measurement_pack.raw_measurements_[0] * sin(measurement_pack.raw_measurements_[1]);
+    	double x = measurement_pack.raw_measurements_[0] * cos(measurement_pack.raw_measurements_[1]);
+    	double y = measurement_pack.raw_measurements_[0] * sin(measurement_pack.raw_measurements_[1]);
         ekf_.x_ << x, y, 0, 0;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
         ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
     }
     // Initialize state covariance
-    ekf_.P_ << 10, 0, 0, 0,
-    		   0, 10, 0 ,0,
-			   0, 0, 1000, 0,
-			   0, 0, 0, 1000;
+    ekf_.P_ << 1., 0., 0.,    0.,
+    		   0., 1., 0.,    0.,
+			   0., 0., 1000., 0.,
+			   0., 0., 0.,    1000.;
 
     // done initializing, no need to predict or update
     is_initialized_ = true;
@@ -102,12 +102,12 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   // process noise covariance matrix Q
   // Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
-  int noise_ax = 9;
-  int noise_ay = 9;
+  double noise_ax = 9.0;
+  double noise_ay = 9.0;
 
-  float dt2 = dt*dt;
-  float dt3 = dt2*dt;
-  float dt4 = dt3*dt;
+  double dt2 = dt*dt;
+  double dt3 = dt2*dt;
+  double dt4 = dt3*dt;
 
   ekf_.Q_ <<  dt4/4*noise_ax, 0,              dt3/2*noise_ax, 0,
               0,              dt4/4*noise_ay, 0,              dt3/2*noise_ay,
