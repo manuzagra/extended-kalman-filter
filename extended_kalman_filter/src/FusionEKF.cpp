@@ -67,12 +67,16 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
     // Initialize state.
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-    	double x = measurement_pack.raw_measurements_[0] * cos(measurement_pack.raw_measurements_[1]);
-    	double y = measurement_pack.raw_measurements_[0] * sin(measurement_pack.raw_measurements_[1]);
-        ekf_.x_ << x, y, 0, 0;
+        ekf_.x_ << measurement_pack.raw_measurements_[0] * cos(measurement_pack.raw_measurements_[1]),
+        		measurement_pack.raw_measurements_[0] * sin(measurement_pack.raw_measurements_[1]),
+				0.,
+				0.;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
-        ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+        ekf_.x_ << measurement_pack.raw_measurements_[0],
+        		   measurement_pack.raw_measurements_[1],
+				   0.,
+				   0.;
     }
     // Initialize state covariance
     ekf_.P_ << 1., 0., 0.,    0.,
@@ -95,10 +99,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    */
 
   // state transition matrix F
-  ekf_.F_ << 1, 0, dt, 0,
-		     0, 1, 0, dt,
-			 0, 0, 1, 0,
-			 0, 0, 0, 1;
+  ekf_.F_ << 1., 0., dt, 0.,
+		     0., 1., 0., dt,
+			 0., 0., 1., 0.,
+			 0., 0., 0., 1.;
 
   // process noise covariance matrix Q
   // Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
